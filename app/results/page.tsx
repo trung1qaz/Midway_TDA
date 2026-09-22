@@ -40,7 +40,10 @@ export default function ResultsPage() {
                 {member.name}
               </p>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Location: {member.location}
+                Location: {member.location}{" "}
+                <span className="italic text-zinc-400 dark:text-zinc-500">
+                  (geocoding will run here in a future week)
+                </span>
               </p>
               {member.availability && (
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">

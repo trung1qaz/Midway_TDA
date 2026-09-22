@@ -1,38 +1,39 @@
-// TEMPORARY: proves the Google Maps Geocoding API key and request pipeline
-// work end-to-end. Not wired into the UI. Remove once real geocoding logic
-// (dynamic addresses, error handling for ambiguous input, etc.) lands.
+// TEMPORARY: proves the geocoding request pipeline works end-to-end.
+// Not wired into the UI. Remove once real geocoding logic (dynamic
+// addresses, error handling for ambiguous input, etc.) lands.
+//
+// Uses OSM Nominatim: free, no API key/billing required. Their usage
+// policy requires a descriptive User-Agent identifying the app and a
+// contact, plus a 1 request/sec rate limit -- fine for this one-off
+// test, but worth respecting once real geocoding traffic exists.
 
 const TEST_ADDRESS = "DePauw University, Greencastle, IN";
+const NOMINATIM_USER_AGENT =
+  "Midway-Capstone/0.1 (contact: dam.t@northeastern.edu)";
 
 export async function GET() {
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  const url = new URL("https://nominatim.openstreetmap.org/search");
+  url.searchParams.set("q", TEST_ADDRESS);
+  url.searchParams.set("format", "json");
+  url.searchParams.set("limit", "1");
 
-  if (!apiKey) {
-    return Response.json(
-      { error: "GOOGLE_MAPS_API_KEY is not set in .env.local" },
-      { status: 500 }
-    );
-  }
-
-  const url = new URL("https://maps.googleapis.com/maps/api/geocode/json");
-  url.searchParams.set("address", TEST_ADDRESS);
-  url.searchParams.set("key", apiKey);
-
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), {
+    headers: { "User-Agent": NOMINATIM_USER_AGENT },
+  });
   const data = await res.json();
 
-  if (data.status !== "OK") {
+  if (!Array.isArray(data) || data.length === 0) {
     return Response.json(
-      { error: data.status, details: data.error_message ?? null },
+      { error: "No results found for address" },
       { status: 502 }
     );
   }
 
-  const { lat, lng } = data.results[0].geometry.location;
+  const { lat, lon } = data[0];
 
   return Response.json({
     address: TEST_ADDRESS,
-    lat,
-    lng,
+    lat: Number(lat),
+    lng: Number(lon),
   });
 }

@@ -1,0 +1,1263 @@
+{
+  "title": "Midway architecture, v1 blueprint",
+  "output": {
+    "stem": "midway-architecture",
+    "primary": "td"
+  },
+  "scope": "Midway's web app, from the group entering their details to a ranked, explained list of meeting places. Hosting, deployment and accounts are left out.",
+  "classes": {
+    "action": {
+      "w": 264,
+      "h": 92
+    },
+    "component": {
+      "w": 236,
+      "h": 94
+    },
+    "decision": {
+      "w": 168,
+      "h": 86
+    },
+    "user": {
+      "w": 186,
+      "h": 104
+    }
+  },
+  "palette": {
+    "panel": {
+      "P1": [
+        "#F5F7FA",
+        "#37474F"
+      ],
+      "B1": [
+        "#FCE4EC",
+        "#AD1457"
+      ],
+      "P2": [
+        "#F5F7FA",
+        "#37474F"
+      ],
+      "N2": [
+        "#EDE7F6",
+        "#4527A0"
+      ],
+      "G2": [
+        "#FFF3E0",
+        "#E65100"
+      ],
+      "N3": [
+        "#EDE7F6",
+        "#4527A0"
+      ],
+      "O3": [
+        "#FFF3E0",
+        "#E65100"
+      ],
+      "P3": [
+        "#F5F7FA",
+        "#37474F"
+      ],
+      "F3": [
+        "#E0F2F1",
+        "#00695C"
+      ],
+      "P4": [
+        "#F5F7FA",
+        "#37474F"
+      ],
+      "F4": [
+        "#E0F2F1",
+        "#00695C"
+      ],
+      "GM4": [
+        "#FFF3E0",
+        "#E65100"
+      ],
+      "OM4": [
+        "#FFF3E0",
+        "#E65100"
+      ],
+      "P5": [
+        "#F5F7FA",
+        "#37474F"
+      ],
+      "B5": [
+        "#FCE4EC",
+        "#AD1457"
+      ],
+      "GM5": [
+        "#FFF3E0",
+        "#E65100"
+      ],
+      "N5": [
+        "#EDE7F6",
+        "#4527A0"
+      ],
+      "G5": [
+        "#FFF3E0",
+        "#E65100"
+      ]
+    },
+    "fill": {
+      "action": "#BBDEFB",
+      "decision": "#FFF9C4",
+      "user": "#FFE0B2",
+      "ui": "#F8BBD0",
+      "code": "#CFD8DC",
+      "endpoint": "#D1C4E9",
+      "store": "#FFE082",
+      "agent": "#C5CAE9",
+      "tool": "#B2EBF2",
+      "legend": "#FFFFFF"
+    },
+    "status": {
+      "built": "#2E7D32",
+      "design": "#F9A825",
+      "future": "#9E9E9E"
+    },
+    "edge": {
+      "control": "#37474F",
+      "data": "#546E7A",
+      "design": "#F9A825",
+      "future": "#9E9E9E"
+    }
+  },
+  "grid": {
+    "cell_pad": 34,
+    "cell_pad_cross": 20,
+    "gap_cross": 150,
+    "gap": 100,
+    "panel_pad": 14,
+    "margin": 56
+  },
+  "nodes": [
+    {
+      "id": "USER",
+      "cls": "user",
+      "kind": null,
+      "fill": "user",
+      "status": "built",
+      "col": 1,
+      "row": 0,
+      "badge": "",
+      "icon": "",
+      "name": "Group member",
+      "qualifier": "enters details, then picks a place",
+      "panel": null,
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "A1",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "built",
+      "col": 1,
+      "row": 1,
+      "badge": "[1]",
+      "icon": "",
+      "name": "Enter each member's details",
+      "qualifier": "name, location, availability, budget",
+      "panel": "P1",
+      "asks": true,
+      "fr": "F1",
+      "host": null
+    },
+    {
+      "id": "FORM",
+      "cls": "component",
+      "kind": "ui",
+      "fill": "ui",
+      "status": "built",
+      "col": 2,
+      "row": 1,
+      "badge": "",
+      "icon": "",
+      "name": "[ui] / member form",
+      "qualifier": "MemberForm: add or remove members",
+      "panel": "B1",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "SS1",
+      "cls": "component",
+      "kind": "store",
+      "fill": "store",
+      "status": "built",
+      "col": 3,
+      "row": 1,
+      "badge": "",
+      "icon": "",
+      "name": "[store] sessionStorage",
+      "qualifier": "key midway.members, written on submit, tab memory",
+      "panel": "B1",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "A2",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "design",
+      "col": 1,
+      "row": 2,
+      "badge": "[2]",
+      "icon": "",
+      "name": "Parse free text into fields",
+      "qualifier": "coordinates, time ranges, price limits",
+      "panel": "P2",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "EPPARSE",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 2,
+      "row": 2,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] POST /api/parse",
+      "qualifier": "Next.js route, members in, fields out",
+      "panel": "N2",
+      "asks": false,
+      "fr": "",
+      "host": "nextjs"
+    },
+    {
+      "id": "PARSE",
+      "cls": "component",
+      "kind": "code",
+      "fill": "code",
+      "status": "design",
+      "col": 3,
+      "row": 2,
+      "badge": "",
+      "icon": "",
+      "name": "[code] parseMemberInput",
+      "qualifier": "builds the prompt, validates the reply",
+      "panel": "N2",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "GEM1",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 4,
+      "row": 2,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] Gemini generateContent",
+      "qualifier": "Google's LLM API",
+      "panel": "G2",
+      "asks": false,
+      "fr": "",
+      "host": "gemini"
+    },
+    {
+      "id": "A3",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "design",
+      "col": 1,
+      "row": 3,
+      "badge": "[3]",
+      "icon": "",
+      "name": "Confirm how input was read",
+      "qualifier": "each member checks their own fields",
+      "panel": "P2",
+      "asks": true,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "D1",
+      "cls": "decision",
+      "kind": null,
+      "fill": "decision",
+      "status": "design",
+      "col": 1,
+      "row": 4,
+      "badge": "",
+      "icon": "",
+      "name": "Correct?",
+      "qualifier": "",
+      "panel": "P2",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "A4",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "design",
+      "col": 1,
+      "row": 5,
+      "badge": "[4]",
+      "icon": "",
+      "name": "Geocode member locations",
+      "qualifier": "place text to latitude and longitude",
+      "panel": "P2",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "EPGEO",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 2,
+      "row": 5,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] POST /api/geocode",
+      "qualifier": "Next.js route, one call per member",
+      "panel": "N3",
+      "asks": false,
+      "fr": "",
+      "host": "nextjs"
+    },
+    {
+      "id": "GEO",
+      "cls": "component",
+      "kind": "code",
+      "fill": "code",
+      "status": "design",
+      "col": 3,
+      "row": 5,
+      "badge": "",
+      "icon": "",
+      "name": "[code] geocodeLocation",
+      "qualifier": "at most 1 request a second, named User-Agent",
+      "panel": "N3",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "EPTEST",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "built",
+      "col": 2,
+      "row": 6,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] GET /api/test-geocode",
+      "qualifier": "smoke test, one fixed address",
+      "panel": "N3",
+      "asks": false,
+      "fr": "",
+      "host": "nextjs"
+    },
+    {
+      "id": "NOM",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 4,
+      "row": 6,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] Nominatim /search",
+      "qualifier": "free geocoder, no API key",
+      "panel": "O3",
+      "asks": false,
+      "fr": "",
+      "host": "nominatim"
+    },
+    {
+      "id": "A5",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "design",
+      "col": 1,
+      "row": 7,
+      "badge": "[5]",
+      "icon": "",
+      "name": "Generate candidate meeting points",
+      "qualifier": "real destinations, not a raw centre",
+      "panel": "P3",
+      "asks": false,
+      "fr": "F2",
+      "host": null
+    },
+    {
+      "id": "EPCAND",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 2,
+      "row": 7,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] POST /candidates",
+      "qualifier": "FastAPI route, coordinates in",
+      "panel": "F3",
+      "asks": false,
+      "fr": "",
+      "host": "fastapi"
+    },
+    {
+      "id": "CAND",
+      "cls": "component",
+      "kind": "code",
+      "fill": "code",
+      "status": "design",
+      "col": 3,
+      "row": 7,
+      "badge": "",
+      "icon": "",
+      "name": "[code] generate_candidates",
+      "qualifier": "skips lakes, rivers and mountains",
+      "panel": "F3",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "A6",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "design",
+      "col": 1,
+      "row": 8,
+      "badge": "[6]",
+      "icon": "",
+      "name": "Score each place per member",
+      "qualifier": "travel time, cost, weather, custom",
+      "panel": "P4",
+      "asks": false,
+      "fr": "F3",
+      "host": null
+    },
+    {
+      "id": "EPSCORE",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 2,
+      "row": 8,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] POST /scores",
+      "qualifier": "FastAPI route, candidates in",
+      "panel": "F4",
+      "asks": false,
+      "fr": "",
+      "host": "fastapi"
+    },
+    {
+      "id": "SCORE",
+      "cls": "component",
+      "kind": "code",
+      "fill": "code",
+      "status": "design",
+      "col": 3,
+      "row": 8,
+      "badge": "",
+      "icon": "",
+      "name": "[code] score_candidates",
+      "qualifier": "per-member scores, then the group average",
+      "panel": "F4",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "DM",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 4,
+      "row": 8,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] Distance Matrix API",
+      "qualifier": "travel time for each member",
+      "panel": "GM4",
+      "asks": false,
+      "fr": "",
+      "host": "gmaps"
+    },
+    {
+      "id": "A7",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "design",
+      "col": 1,
+      "row": 9,
+      "badge": "[7]",
+      "icon": "",
+      "name": "Rank places by group score",
+      "qualifier": "the average of each member's score",
+      "panel": "P4",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "METEO",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 3,
+      "row": 9,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] Open-Meteo /v1/forecast",
+      "qualifier": "weather, free tier, no key",
+      "panel": "OM4",
+      "asks": false,
+      "fr": "",
+      "host": "openmeteo"
+    },
+    {
+      "id": "SS2",
+      "cls": "component",
+      "kind": "store",
+      "fill": "store",
+      "status": "built",
+      "col": 2,
+      "row": 10,
+      "badge": "",
+      "icon": "",
+      "name": "[store] sessionStorage",
+      "qualifier": "the same key, read on load",
+      "panel": "B5",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "A8",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "design",
+      "col": 1,
+      "row": 11,
+      "badge": "[8]",
+      "icon": "",
+      "name": "Show top places as map pins",
+      "qualifier": "click a pin to see its score",
+      "panel": "P5",
+      "asks": true,
+      "fr": "F4",
+      "host": null
+    },
+    {
+      "id": "RESULTS",
+      "cls": "component",
+      "kind": "ui",
+      "fill": "ui",
+      "status": "design",
+      "col": 2,
+      "row": 11,
+      "badge": "",
+      "icon": "",
+      "name": "[ui] /results page",
+      "qualifier": "map, ranked list, raw data view",
+      "panel": "B5",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "MAPS",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 3,
+      "row": 11,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] Maps JavaScript API",
+      "qualifier": "draws the interactive map",
+      "panel": "GM5",
+      "asks": false,
+      "fr": "",
+      "host": "gmaps"
+    },
+    {
+      "id": "A9",
+      "cls": "action",
+      "kind": null,
+      "fill": "action",
+      "status": "design",
+      "col": 1,
+      "row": 12,
+      "badge": "[9]",
+      "icon": "",
+      "name": "Explain trade-offs, suggest venues",
+      "qualifier": "plain words for each top place",
+      "panel": "P5",
+      "asks": false,
+      "fr": "F5",
+      "host": null
+    },
+    {
+      "id": "EPEXPL",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 2,
+      "row": 12,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] POST /api/explain",
+      "qualifier": "Next.js route, scores in, text out",
+      "panel": "N5",
+      "asks": false,
+      "fr": "",
+      "host": "nextjs"
+    },
+    {
+      "id": "EXPL",
+      "cls": "component",
+      "kind": "code",
+      "fill": "code",
+      "status": "design",
+      "col": 3,
+      "row": 12,
+      "badge": "",
+      "icon": "",
+      "name": "[code] explainTradeoffs",
+      "qualifier": "writes the explanation and venue ideas",
+      "panel": "N5",
+      "asks": false,
+      "fr": "",
+      "host": null
+    },
+    {
+      "id": "GEM2",
+      "cls": "component",
+      "kind": "endpoint",
+      "fill": "endpoint",
+      "status": "design",
+      "col": 4,
+      "row": 12,
+      "badge": "",
+      "icon": "",
+      "name": "[endpoint] Gemini generateContent",
+      "qualifier": "the same LLM API as step 2",
+      "panel": "G5",
+      "asks": false,
+      "fr": "",
+      "host": "gemini"
+    }
+  ],
+  "panels": [
+    {
+      "id": "P1",
+      "title": "1. Multi-person input (step 1)",
+      "parent": null,
+      "host": null
+    },
+    {
+      "id": "B1",
+      "title": "Browser tab",
+      "parent": "P1",
+      "host": "browser"
+    },
+    {
+      "id": "P2",
+      "title": "2. Parse and geocode (steps 2 to 4)",
+      "parent": null,
+      "host": null
+    },
+    {
+      "id": "N2",
+      "title": "Next.js server",
+      "parent": "P2",
+      "host": "nextjs"
+    },
+    {
+      "id": "G2",
+      "title": "Google Gemini",
+      "parent": "P2",
+      "host": "gemini"
+    },
+    {
+      "id": "N3",
+      "title": "Next.js server",
+      "parent": "P2",
+      "host": "nextjs"
+    },
+    {
+      "id": "O3",
+      "title": "OpenStreetMap",
+      "parent": "P2",
+      "host": "nominatim"
+    },
+    {
+      "id": "P3",
+      "title": "3. Midpoint generation (step 5)",
+      "parent": null,
+      "host": null
+    },
+    {
+      "id": "F3",
+      "title": "FastAPI backend",
+      "parent": "P3",
+      "host": "fastapi"
+    },
+    {
+      "id": "P4",
+      "title": "4. Scoring (steps 6, 7)",
+      "parent": null,
+      "host": null
+    },
+    {
+      "id": "F4",
+      "title": "FastAPI backend",
+      "parent": "P4",
+      "host": "fastapi"
+    },
+    {
+      "id": "GM4",
+      "title": "Google Maps Platform",
+      "parent": "P4",
+      "host": "gmaps"
+    },
+    {
+      "id": "OM4",
+      "title": "Open-Meteo",
+      "parent": "P4",
+      "host": "openmeteo"
+    },
+    {
+      "id": "P5",
+      "title": "5. Map, results, explanation (steps 8, 9)",
+      "parent": null,
+      "host": null
+    },
+    {
+      "id": "B5",
+      "title": "Browser tab",
+      "parent": "P5",
+      "host": "browser"
+    },
+    {
+      "id": "GM5",
+      "title": "Google Maps Platform",
+      "parent": "P5",
+      "host": "gmaps"
+    },
+    {
+      "id": "N5",
+      "title": "Next.js server",
+      "parent": "P5",
+      "host": "nextjs"
+    },
+    {
+      "id": "G5",
+      "title": "Google Gemini",
+      "parent": "P5",
+      "host": "gemini"
+    }
+  ],
+  "legend": [
+    {
+      "kind": "action",
+      "text": "[n] STEP, person = group decides"
+    },
+    {
+      "kind": "decision",
+      "text": "DECISION"
+    },
+    {
+      "kind": "requirement",
+      "text": "Fn = roadmap feature n"
+    },
+    {
+      "kind": "kind:ui",
+      "text": "[ui] page"
+    },
+    {
+      "kind": "kind:endpoint",
+      "text": "[endpoint] HTTP route"
+    },
+    {
+      "kind": "kind:code",
+      "text": "[code] plain code"
+    },
+    {
+      "kind": "kind:store",
+      "text": "[store] saved data"
+    },
+    {
+      "kind": "status_bd",
+      "text": "built / designed"
+    },
+    {
+      "kind": "control",
+      "text": "solid control"
+    },
+    {
+      "kind": "data",
+      "text": "dotted data"
+    }
+  ],
+  "edges": [
+    {
+      "from": "USER",
+      "to": "A1",
+      "type": "control",
+      "label": "fills in",
+      "route": "flow",
+      "dir": "both",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A1",
+      "to": "FORM",
+      "type": "control",
+      "label": "step 1",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "FORM",
+      "to": "SS1",
+      "type": "data",
+      "label": "saveMembers",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A1",
+      "to": "A2",
+      "type": "control",
+      "label": "submit",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A2",
+      "to": "EPPARSE",
+      "type": "control",
+      "label": "step 2",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "EPPARSE",
+      "to": "PARSE",
+      "type": "control",
+      "label": "runs",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "PARSE",
+      "to": "GEM1",
+      "type": "data",
+      "label": "text, fields",
+      "route": "auto",
+      "dir": "both",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A2",
+      "to": "A3",
+      "type": "control",
+      "label": "then",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A3",
+      "to": "D1",
+      "type": "control",
+      "label": "check",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "D1",
+      "to": "A4",
+      "type": "control",
+      "label": "yes",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "D1",
+      "to": "A1",
+      "type": "control",
+      "label": "no, edit input",
+      "route": "user:1",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A4",
+      "to": "EPGEO",
+      "type": "control",
+      "label": "step 4",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "EPGEO",
+      "to": "GEO",
+      "type": "control",
+      "label": "runs",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "GEO",
+      "to": "NOM",
+      "type": "data",
+      "label": "place, lat lng",
+      "route": "auto",
+      "dir": "both",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "EPTEST",
+      "to": "NOM",
+      "type": "data",
+      "label": "fixed address",
+      "route": "auto:0:16:16",
+      "dir": "both",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "EPTEST",
+      "to": "EPGEO",
+      "type": "control",
+      "label": "replaced by",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A4",
+      "to": "A5",
+      "type": "control",
+      "label": "then",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A5",
+      "to": "EPCAND",
+      "type": "control",
+      "label": "step 5",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "EPCAND",
+      "to": "CAND",
+      "type": "control",
+      "label": "runs",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A5",
+      "to": "A6",
+      "type": "control",
+      "label": "then",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A6",
+      "to": "EPSCORE",
+      "type": "control",
+      "label": "steps 6, 7",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "EPSCORE",
+      "to": "SCORE",
+      "type": "control",
+      "label": "runs",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "SCORE",
+      "to": "DM",
+      "type": "data",
+      "label": "travel times",
+      "route": "auto",
+      "dir": "both",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "SCORE",
+      "to": "METEO",
+      "type": "data",
+      "label": "forecast",
+      "route": "auto",
+      "dir": "both",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A6",
+      "to": "A7",
+      "type": "control",
+      "label": "then",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A7",
+      "to": "A8",
+      "type": "control",
+      "label": "then",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A8",
+      "to": "RESULTS",
+      "type": "control",
+      "label": "step 8",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "SS2",
+      "to": "RESULTS",
+      "type": "data",
+      "label": "loadMembers",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "RESULTS",
+      "to": "MAPS",
+      "type": "data",
+      "label": "pins, map",
+      "route": "auto",
+      "dir": "both",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A8",
+      "to": "A9",
+      "type": "control",
+      "label": "pick a pin",
+      "route": "flow",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "A9",
+      "to": "EPEXPL",
+      "type": "control",
+      "label": "step 9",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "EPEXPL",
+      "to": "EXPL",
+      "type": "control",
+      "label": "runs",
+      "route": "auto",
+      "dir": "one",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    },
+    {
+      "from": "EXPL",
+      "to": "GEM2",
+      "type": "data",
+      "label": "scores, text",
+      "route": "auto",
+      "dir": "both",
+      "lnudge": [
+        0,
+        0
+      ],
+      "lnudge_lr": null
+    }
+  ],
+  "footnote": "Scope: Midway's web app, from the group entering their details to a ranked, explained list of meeting places. Hosting, deployment and accounts are left out.\nThis is the design, not today's code: green solid is built, amber dashed is designed. The form, sessionStorage, a placeholder /results page and a smoke-test geocode route exist today. Hosts are drawn beside every stage they serve, so Next.js, FastAPI, the browser tab and the Google APIs each appear more than once. Which host runs the parser and the explainer, and the route and function names, are proposed here; the docs do not fix them yet. F1 to F5 are the five core features in docs/ROADMAP.md, once each."
+}

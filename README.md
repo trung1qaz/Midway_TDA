@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Midway
 
-## Getting Started
+When a group is spread across different cities, choosing a fair place to meet can stall a group chat. People argue about driving distance, price and other factors. Midway collects each member's approximate location, schedule and budget. It then generates candidate meeting points, scores each one on the criteria the group cares about, and explains the trade-offs in plain language, so the group can decide quickly and fairly.
 
-First, run the development server:
+> **Status:** Early development. The multi-person input form and project scaffold are in place, and there is a test route for geocoding. Midpoint generation, scoring, maps and AI features are still planned. See [docs/ROADMAP.md](docs/ROADMAP.md).
+
+## Tech stack
+
+- **Next.js (App Router) + TypeScript**: frontend and API routes
+- **Tailwind CSS**: UI styling
+- **OSM Nominatim**: geocoding (currently used in place of Google Geocoding; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- **Google Maps Platform** *(planned)*: maps and Distance Matrix
+- **Open-Meteo** *(planned)*: weather
+- **FastAPI (Python)** *(planned)*: backend
+- **Generative AI** *(planned)*: parsing free-text input and explaining trade-offs in plain language
+
+## Getting started
+
+Requires Node.js and npm.
 
 ```bash
+git clone <repo-url>
+cd midway
+npm install
+cp .env.local.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+No environment variables are needed right now. Nominatim and Open-Meteo's free tier don't use API keys. [.env.local.example](.env.local.example) is the template, and new variables will be added there when integrations that need keys arrive. Never commit `.env.local`.
 
-## Learn More
+### Other scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command         | Purpose                  |
+| --------------- | ------------------------ |
+| `npm run build` | Production build         |
+| `npm run start` | Serve the production build |
+| `npm run lint`  | Run ESLint               |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Architecture](docs/ARCHITECTURE.md): tech stack rationale, folder structure and how the pieces fit together
+- [Roadmap](docs/ROADMAP.md): checkpoint timeline and feature status
+- [Ethics](docs/ETHICS.md): privacy and AI-accuracy considerations
+- [References](docs/REFERENCES.md): bibliography and API documentation

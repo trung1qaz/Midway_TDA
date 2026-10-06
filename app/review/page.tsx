@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import DemoBanner from "@/components/DemoBanner";
 import ReviewMemberCard from "@/components/review/ReviewMemberCard";
 import { localIsoDate, postJson } from "@/lib/api/client";
 import {
@@ -19,7 +20,7 @@ type LoadState =
   | { kind: "loading" }
   | { kind: "empty" }
   | { kind: "error"; message: string }
-  | { kind: "ready"; status: ParseResponse["status"] | "restored" };
+  | { kind: "ready"; status: ParseResponse["status"] | "restored"; parser?: string };
 
 // Stored parse results are reused only if they belong to the current form
 // submission (same member ids in the same order).
@@ -57,7 +58,7 @@ export default function ReviewPage() {
       });
       setMembers(res.members);
       saveResolvedMembers(res.members);
-      setState({ kind: "ready", status: res.status });
+      setState({ kind: "ready", status: res.status, parser: res.parser });
     } catch (error) {
       setState({ kind: "error", message: error instanceof Error ? error.message : String(error) });
     }
@@ -167,6 +168,7 @@ export default function ReviewPage() {
 
       {state.kind === "ready" && (
         <>
+          {state.parser?.startsWith("mock") && <DemoBanner />}
           {(state.status === "partial" || state.status === "failed") && (
             <p role="alert" className="rounded-md bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-950/50 dark:text-amber-200">
               {state.status === "failed"

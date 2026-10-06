@@ -1,6 +1,8 @@
 import { serverConfig } from "@/lib/config";
 import { createCache, type AsyncCache } from "@/lib/http/cache";
 import { createThrottle, type Throttle } from "@/lib/http/throttle";
+import { createMockGeocoder } from "@/lib/mocks/geocoder";
+import { createMockRouter } from "@/lib/mocks/router";
 import { createNominatimGeocoder } from "./nominatim";
 import { createOsrmRouter } from "./osrm";
 import type { Geocoder, Router } from "./types";
@@ -41,8 +43,11 @@ function sharedCache(service: string, ttlMs: number, maxEntries: number): AsyncC
 
 const HOUR = 60 * 60 * 1000;
 
+// MIDWAY_USE_MOCKS=true swaps in fixture providers (lib/mocks) so the whole
+// flow works offline with no API key.
 export function getGeocoder(): Geocoder {
   const config = serverConfig();
+  if (config.useMocks) return createMockGeocoder();
   return createNominatimGeocoder({
     baseUrl: config.nominatimBaseUrl,
     userAgent: config.userAgent,
@@ -53,6 +58,7 @@ export function getGeocoder(): Geocoder {
 
 export function getRouter(): Router {
   const config = serverConfig();
+  if (config.useMocks) return createMockRouter();
   return createOsrmRouter({
     baseUrl: config.osrmBaseUrl,
     userAgent: config.userAgent,

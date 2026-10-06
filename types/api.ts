@@ -25,4 +25,5 @@ export interface CandidatesResponse {
   matrixError: string | null;
   seedsTried: number;
   droppedSeeds: string[]; // labels of seeds with no town nearby
+  mock: boolean; // fixture providers were used (MIDWAY_USE_MOCKS)
 }

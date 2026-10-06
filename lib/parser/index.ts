@@ -1,6 +1,7 @@
 import { serverConfig } from "@/lib/config";
 import type { Member } from "@/types/member";
 import type { ParsedMember } from "@/types/parsed";
+import { createMockParser } from "@/lib/mocks/parser";
 import { createGeminiParser } from "./gemini";
 import { fallbackParsedMember, normalizeParserOutput } from "./normalize";
 import type { MemberParser } from "./types";
@@ -9,6 +10,7 @@ export class ParserUnavailableError extends Error {}
 
 export function getMemberParser(): MemberParser {
   const config = serverConfig();
+  if (config.useMocks) return createMockParser();
   if (!config.geminiApiKey) {
     throw new ParserUnavailableError(
       "GEMINI_API_KEY is not set. Add it to .env.local, or set MIDWAY_USE_MOCKS=true to use fixture data."

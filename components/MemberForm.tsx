@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { newMemberId, saveMembers } from "@/lib/memberStorage";
+import { SAMPLE_GROUP } from "@/lib/sampleGroup";
 import type { Member } from "@/types/member";
 
 function emptyMember(): Member {
@@ -29,6 +30,10 @@ export default function MemberForm() {
     setMembers((prev) => [...prev, emptyMember()]);
   }
 
+  function loadSampleGroup() {
+    setMembers(SAMPLE_GROUP.map((m) => ({ ...m, id: newMemberId() })));
+  }
+
   function removeMember(index: number) {
     setMembers((prev) => prev.filter((_, i) => i !== index));
   }
@@ -44,6 +49,14 @@ export default function MemberForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <button
+        type="button"
+        onClick={loadSampleGroup}
+        className="self-start text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+      >
+        Load sample group (4 Midwest members with mixed input)
+      </button>
+
       {members.map((member, index) => (
         <div
           key={member.id}

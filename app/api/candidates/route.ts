@@ -1,5 +1,6 @@
 import { candidatesRequestSchema, jsonError, readJson } from "@/lib/api/schemas";
 import { generateCandidates } from "@/lib/candidates";
+import { mocksEnabled } from "@/lib/config";
 import { getGeocoder, getRouter } from "@/lib/geo/providers";
 import type { CandidatesResponse } from "@/types/api";
 
@@ -57,6 +58,7 @@ export async function POST(request: Request) {
     matrixError,
     seedsTried: seeds.length,
     droppedSeeds: dropped.map((s) => s.label),
+    mock: mocksEnabled(),
   };
   return Response.json(response);
 }

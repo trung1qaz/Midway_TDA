@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import DemoBanner from "@/components/DemoBanner";
 import ResultsMapLoader from "@/components/results/ResultsMapLoader";
 import TravelTable from "@/components/results/TravelTable";
 import { postJson } from "@/lib/api/client";
@@ -96,6 +97,7 @@ export default function ResultsPage() {
 function Results({ data }: { data: CandidatesResponse }) {
   return (
     <>
+      {data.mock && <DemoBanner />}
       <ResultsMapLoader data={data} />
       <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
         <span className="flex items-center gap-2">

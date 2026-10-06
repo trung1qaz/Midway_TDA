@@ -39,7 +39,7 @@ export default function MemberForm() {
       (m) => m.name.trim() && m.location.trim()
     );
     saveMembers(submittable);
-    router.push("/results");
+    router.push("/review");
   }
 
   return (

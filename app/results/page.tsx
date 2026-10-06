@@ -62,8 +62,9 @@ export default function ResultsPage() {
         <div role="status" className="rounded-lg border border-zinc-200 p-6 text-zinc-700 dark:border-zinc-800 dark:text-zinc-300">
           <p className="font-medium">Finding towns and calculating drive times…</p>
           <p className="mt-1 text-sm text-zinc-500">
-            This can take 10–20 seconds the first time. Midway checks several candidate points against the free
-            OpenStreetMap place search, which allows one lookup per second. Repeat runs are faster.
+            This usually takes 10–30 seconds the first time. Midway checks several candidate points against free,
+            rate-limited OpenStreetMap services (one lookup per second), so please keep this tab open. Repeat runs
+            are much faster.
           </p>
         </div>
       )}

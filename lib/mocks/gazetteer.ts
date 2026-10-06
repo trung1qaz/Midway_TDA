@@ -47,6 +47,7 @@ export const MOCK_PLACES: MockPlace[] = [
   { name: "Columbus", state: "OH", type: "city", lat: 39.9612, lng: -82.9988 },
   { name: "Dayton", state: "OH", type: "city", lat: 39.7589, lng: -84.1916 },
   { name: "Champaign", state: "IL", type: "city", lat: 40.1164, lng: -88.2434 },
+  { name: "Urbana", state: "IL", type: "city", lat: 40.1106, lng: -88.2073 },
   { name: "South Bend", state: "IN", type: "city", lat: 41.6764, lng: -86.252 },
   { name: "Lafayette", state: "IN", type: "city", lat: 40.4167, lng: -86.8753 },
   { name: "Bloomington", state: "IN", type: "city", lat: 39.1653, lng: -86.5264 },

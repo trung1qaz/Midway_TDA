@@ -2,21 +2,22 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { saveMembers } from "@/lib/memberStorage";
+import { newMemberId, saveMembers } from "@/lib/memberStorage";
 import type { Member } from "@/types/member";
 
-const emptyMember: Member = {
-  name: "",
-  location: "",
-  availability: "",
-  budget: "",
-};
+function emptyMember(): Member {
+  return { id: newMemberId(), name: "", location: "", availability: "", budget: "" };
+}
 
 export default function MemberForm() {
   const router = useRouter();
-  const [members, setMembers] = useState<Member[]>([{ ...emptyMember }]);
+  const [members, setMembers] = useState<Member[]>(() => [emptyMember()]);
 
-  function updateMember(index: number, field: keyof Member, value: string) {
+  function updateMember(
+    index: number,
+    field: Exclude<keyof Member, "id">,
+    value: string
+  ) {
     setMembers((prev) =>
       prev.map((member, i) =>
         i === index ? { ...member, [field]: value } : member
@@ -25,7 +26,7 @@ export default function MemberForm() {
   }
 
   function addMember() {
-    setMembers((prev) => [...prev, { ...emptyMember }]);
+    setMembers((prev) => [...prev, emptyMember()]);
   }
 
   function removeMember(index: number) {
@@ -45,7 +46,7 @@ export default function MemberForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       {members.map((member, index) => (
         <div
-          key={index}
+          key={member.id}
           className="flex flex-col gap-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
         >
           <div className="flex items-center justify-between">

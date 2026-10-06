@@ -1,12 +1,15 @@
 import { isoToday, jsonError, parseRequestSchema, readJson } from "@/lib/api/schemas";
+import { getGeocoder } from "@/lib/geo/providers";
+import { resolveMembers } from "@/lib/geo/resolveMembers";
 import { getMemberParser, parseMembers, ParserUnavailableError } from "@/lib/parser";
 
 // POST /api/parse
 // Body: { members: Member[], today?: "YYYY-MM-DD" }
-// Returns: { members: ParsedMember[], status, parser }
+// Returns: { members: ResolvedMember[], status, parser }
 //
-// One batched LLM request per call. Nothing is persisted; member text is
-// only forwarded to the parser provider.
+// One batched LLM request, then one geocode per anchor (throttled to 1/s, so
+// a 4-member group takes a few seconds). Nothing is persisted; member text is
+// only forwarded to the parser provider and anchor strings to the geocoder.
 export async function POST(request: Request) {
   const body = parseRequestSchema.safeParse(await readJson(request));
   if (!body.success) {
@@ -22,5 +25,6 @@ export async function POST(request: Request) {
   }
 
   const outcome = await parseMembers(parser, body.data.members, body.data.today ?? isoToday());
-  return Response.json(outcome);
+  const members = await resolveMembers(outcome.members, getGeocoder());
+  return Response.json({ ...outcome, members });
 }

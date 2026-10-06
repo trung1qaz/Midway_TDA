@@ -22,6 +22,22 @@ export const parseRequestSchema = z.object({
     .optional(),
 });
 
+export const candidatesRequestSchema = z.object({
+  members: z
+    .array(
+      z.object({
+        id: z.string().min(1).max(100),
+        name: z.string().max(100),
+        point: z.object({
+          lat: z.number().min(-90).max(90),
+          lng: z.number().min(-180).max(180),
+        }),
+      })
+    )
+    .min(1)
+    .max(MAX_MEMBERS),
+});
+
 export function jsonError(message: string, status: number, details?: unknown): Response {
   return Response.json({ error: message, ...(details ? { details } : {}) }, { status });
 }

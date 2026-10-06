@@ -35,6 +35,7 @@ export function serverConfig() {
     osrmBaseUrl: stripTrailingSlash(
       env("OSRM_BASE_URL") ?? "https://router.project-osrm.org"
     ),
+    overpassUrl: env("OVERPASS_URL") ?? "https://overpass-api.de/api/interpreter",
     userAgent: env("APP_USER_AGENT") ?? DEFAULT_USER_AGENT,
     useMocks: mocksEnabled(),
   };

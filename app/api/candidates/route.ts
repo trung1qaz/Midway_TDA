@@ -1,7 +1,7 @@
 import { candidatesRequestSchema, jsonError, readJson } from "@/lib/api/schemas";
 import { generateCandidates } from "@/lib/candidates";
 import { mocksEnabled } from "@/lib/config";
-import { getGeocoder, getRouter } from "@/lib/geo/providers";
+import { getGeocoder, getRouter, getSettlementFinder } from "@/lib/geo/providers";
 import type { CandidatesResponse } from "@/types/api";
 
 // POST /api/candidates
@@ -9,7 +9,8 @@ import type { CandidatesResponse } from "@/types/api";
 // Returns: CandidatesResponse
 //
 // Seeds -> reverse-geocode snapping (up to 2 Nominatim calls per seed at
-// 1/s, so ~5–15 s on a cold cache) -> one OSRM table request.
+// 1/s) -> one Overpass query for seeds outside town limits -> one OSRM table
+// request. ~10–20 s on a cold cache, near-instant when cached.
 // Candidates are returned in generation order. No scoring or ranking yet.
 export async function POST(request: Request) {
   const body = candidatesRequestSchema.safeParse(await readJson(request));
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
 
   let generated;
   try {
-    generated = await generateCandidates(points, getGeocoder());
+    generated = await generateCandidates(points, getGeocoder(), getSettlementFinder());
   } catch (error) {
     console.error("[candidates] place lookup failed:", error instanceof Error ? error.message : error);
     return jsonError(
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { seeds, candidates, dropped } = generated;
+  const { seeds, candidates, dropped, notes } = generated;
   if (candidates.length === 0) {
     return jsonError(
       "No towns or cities were found near the group's meeting points (they may fall over water or very remote land).",
@@ -58,6 +59,7 @@ export async function POST(request: Request) {
     matrixError,
     seedsTried: seeds.length,
     droppedSeeds: dropped.map((s) => s.label),
+    notes,
     mock: mocksEnabled(),
   };
   return Response.json(response);

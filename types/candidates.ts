@@ -29,6 +29,9 @@ export interface Candidate {
   strategy: SeedStrategy;
   seedLabel: string;
   seedPoint: LatLng;
+  // "reverse-geocode": the seed fell inside this town's boundary.
+  // "nearest-settlement": nearest named town to the seed (Overpass fallback).
+  snappedBy: "reverse-geocode" | "nearest-settlement";
   // Labels of later seeds that snapped to the same place.
   alsoFoundBy: string[];
 }

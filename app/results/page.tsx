@@ -62,8 +62,8 @@ export default function ResultsPage() {
         <div role="status" className="rounded-lg border border-zinc-200 p-6 text-zinc-700 dark:border-zinc-800 dark:text-zinc-300">
           <p className="font-medium">Finding towns and calculating drive times…</p>
           <p className="mt-1 text-sm text-zinc-500">
-            This can take around 10 seconds. Midway checks several candidate points against the free OpenStreetMap
-            place search, which allows one lookup per second.
+            This can take 10–20 seconds the first time. Midway checks several candidate points against the free
+            OpenStreetMap place search, which allows one lookup per second. Repeat runs are faster.
           </p>
         </div>
       )}
@@ -122,6 +122,11 @@ function Results({ data }: { data: CandidatesResponse }) {
         . Seeds that landed on the same town were merged.
         {data.candidates.length < 3 && " That's fewer than usual, likely because the group is close together."}
       </p>
+      {data.notes.map((note) => (
+        <p key={note} role="alert" className="rounded-md bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-950/50 dark:text-amber-200">
+          {note}
+        </p>
+      ))}
 
       <section className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Drive time and distance</h2>
@@ -138,11 +143,18 @@ function Results({ data }: { data: CandidatesResponse }) {
 
       <details className="text-sm text-zinc-600 dark:text-zinc-400">
         <summary className="cursor-pointer">How were these candidates chosen?</summary>
+        <p className="mt-2">
+          Midway computes a few geometric seed points (centroid, geometric median, minimax center and a ring around
+          the centroid), then moves each one to a real town: the town the point falls in, or else the nearest named
+          town within 30 km.
+        </p>
         <ul className="mt-2 flex list-disc flex-col gap-1 pl-5">
           {data.candidates.map((c, j) => (
             <li key={c.id}>
-              {j + 1}. {c.name}: snapped from the <em>{c.seedLabel}</em> seed ({strategyLabel[c.strategy] ?? c.strategy}
-              ){c.alsoFoundBy.length > 0 && `; also reached from ${c.alsoFoundBy.join(", ")}`}.
+              {j + 1}. {c.name}:{" "}
+              {c.snappedBy === "reverse-geocode" ? "the" : "nearest town to the"} <em>{c.seedLabel}</em> seed (
+              {strategyLabel[c.strategy] ?? c.strategy})
+              {c.alsoFoundBy.length > 0 && `; also reached from ${c.alsoFoundBy.join(", ")}`}.
             </li>
           ))}
         </ul>

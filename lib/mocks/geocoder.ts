@@ -6,9 +6,12 @@ import { MOCK_PLACES, STATE_NAMES, type MockPlace } from "./gazetteer";
 // names inside the query; reverse returns the nearest fixture settlement.
 // Only places in gazetteer.ts can be found in mock mode.
 
-const REVERSE_RADIUS_KM = 45;
+// Small on purpose: like real Nominatim, a reverse lookup only "hits" a town
+// when the point is basically inside it; everything else goes through the
+// nearby-settlement fallback (lib/mocks/settlements.ts).
+const REVERSE_RADIUS_KM = 6;
 
-function toPlace(p: MockPlace, index: number): Place {
+export function toPlace(p: MockPlace, index: number): Place {
   const stateName = STATE_NAMES[p.state] ?? p.state;
   const displayName =
     p.type === "state"

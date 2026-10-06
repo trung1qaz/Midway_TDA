@@ -24,6 +24,13 @@ export interface Geocoder {
   reverseGeocode(point: LatLng, zoom: number): Promise<Place | null>;
 }
 
+// Finds named settlements near points (fallback for candidate snapping when
+// reverse geocoding only yields a county or other area).
+export interface SettlementFinder {
+  readonly name: string;
+  nearbySettlements(points: LatLng[], radiusKm: number): Promise<Place[]>;
+}
+
 // Row i = source i, column j = destination j. null = no route.
 export interface TravelMatrix {
   durationsSec: (number | null)[][];

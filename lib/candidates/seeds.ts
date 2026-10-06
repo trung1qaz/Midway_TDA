@@ -82,47 +82,65 @@ export function maxDistanceKm(p: LatLng, points: LatLng[]): number {
 }
 
 // Minimax center: the point minimizing the farthest member's distance (the
-// fairness-oriented seed). Coarse grid over the members' bounding box, then
-// repeatedly zooms in around the best cell. Assumes the group doesn't span
-// the antimeridian, which holds for this app's use.
-export function minimaxCenter(points: LatLng[], gridSize = 11, rounds = 25): LatLng | null {
+// fairness-oriented seed). That is the center of the smallest spherical cap
+// containing every member, computed exactly with Welzl's algorithm on 3D unit
+// vectors. (A lat/lng grid search struggles here: the objective has long flat
+// valleys, e.g. along the bisector of two members.) Valid when the group fits
+// in one hemisphere, which any real meetup group does.
+export function minimaxCenter(points: LatLng[]): LatLng | null {
   if (points.length === 0) return null;
   if (points.length === 1) return { ...points[0] };
+  return fromVector(smallestEnclosingCap(points.map(toVector)).center);
+}
 
-  let minLat = Math.min(...points.map((p) => p.lat));
-  let maxLat = Math.max(...points.map((p) => p.lat));
-  let minLng = Math.min(...points.map((p) => p.lng));
-  let maxLng = Math.max(...points.map((p) => p.lng));
-  const padLat = Math.max((maxLat - minLat) * 0.1, 0.01);
-  const padLng = Math.max((maxLng - minLng) * 0.1, 0.01);
-  minLat -= padLat;
-  maxLat += padLat;
-  minLng -= padLng;
-  maxLng += padLng;
+interface Cap {
+  center: Vec3; // unit vector
+  angle: number; // angular radius in radians
+}
 
-  let best: LatLng = { lat: (minLat + maxLat) / 2, lng: (minLng + maxLng) / 2 };
-  let bestScore = maxDistanceKm(best, points);
+const dot = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const cross = (a: Vec3, b: Vec3): Vec3 => [
+  a[1] * b[2] - a[2] * b[1],
+  a[2] * b[0] - a[0] * b[2],
+  a[0] * b[1] - a[1] * b[0],
+];
+const angleBetween = (a: Vec3, b: Vec3) => Math.acos(Math.max(-1, Math.min(1, dot(a, b))));
+const inCap = (cap: Cap, p: Vec3) => angleBetween(cap.center, p) <= cap.angle + 1e-12;
 
-  for (let round = 0; round < rounds; round++) {
-    const stepLat = (maxLat - minLat) / (gridSize - 1);
-    const stepLng = (maxLng - minLng) / (gridSize - 1);
-    for (let i = 0; i < gridSize; i++) {
-      for (let j = 0; j < gridSize; j++) {
-        const p = { lat: minLat + i * stepLat, lng: minLng + j * stepLng };
-        const score = maxDistanceKm(p, points);
-        if (score < bestScore) {
-          best = p;
-          bestScore = score;
-        }
+function capFrom2(a: Vec3, b: Vec3): Cap {
+  const center = normalize([a[0] + b[0], a[1] + b[1], a[2] + b[2]]);
+  return { center, angle: angleBetween(center, a) };
+}
+
+function capFrom3(a: Vec3, b: Vec3, c: Vec3): Cap {
+  // The circumcenter is the normal of the plane through the three points.
+  const n = cross(sub(b, a), sub(c, a));
+  if (norm(n) < 1e-15) {
+    // On one great circle: the cap on the farthest pair covers all three.
+    const caps = [capFrom2(a, b), capFrom2(a, c), capFrom2(b, c)];
+    return caps.reduce((m, x) => (x.angle > m.angle ? x : m));
+  }
+  let center = normalize(n);
+  if (dot(center, a) < 0) center = [-center[0], -center[1], -center[2]];
+  return { center, angle: angleBetween(center, a) };
+}
+
+// Iterative Welzl. Groups are small (<= 20 members), so the deterministic
+// worst case doesn't matter and no shuffling is needed.
+function smallestEnclosingCap(pts: Vec3[]): Cap {
+  let cap: Cap = { center: pts[0], angle: 0 };
+  for (let i = 1; i < pts.length; i++) {
+    if (inCap(cap, pts[i])) continue;
+    cap = { center: pts[i], angle: 0 };
+    for (let j = 0; j < i; j++) {
+      if (inCap(cap, pts[j])) continue;
+      cap = capFrom2(pts[i], pts[j]);
+      for (let k = 0; k < j; k++) {
+        if (!inCap(cap, pts[k])) cap = capFrom3(pts[i], pts[j], pts[k]);
       }
     }
-    // Shrink the search window to two grid cells around the best point.
-    minLat = best.lat - stepLat;
-    maxLat = best.lat + stepLat;
-    minLng = best.lng - stepLng;
-    maxLng = best.lng + stepLng;
   }
-  return best;
+  return cap;
 }
 
 const RING_BEARINGS: [number, string][] = [

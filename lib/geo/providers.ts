@@ -3,9 +3,11 @@ import { createCache, type AsyncCache } from "@/lib/http/cache";
 import { createThrottle, type Throttle } from "@/lib/http/throttle";
 import { createMockGeocoder } from "@/lib/mocks/geocoder";
 import { createMockRouter } from "@/lib/mocks/router";
+import { createMockSettlementFinder } from "@/lib/mocks/settlements";
 import { createNominatimGeocoder } from "./nominatim";
 import { createOsrmRouter } from "./osrm";
-import type { Geocoder, Router } from "./types";
+import { createOverpassFinder } from "./overpass";
+import type { Geocoder, Router, SettlementFinder } from "./types";
 
 // The one place that decides which provider implementation callers get.
 // Throttles and caches are process-wide singletons, stored on globalThis so
@@ -53,6 +55,17 @@ export function getGeocoder(): Geocoder {
     userAgent: config.userAgent,
     throttle: sharedThrottle("nominatim"),
     cache: sharedCache("nominatim", 24 * HOUR, 2000),
+  });
+}
+
+export function getSettlementFinder(): SettlementFinder {
+  const config = serverConfig();
+  if (config.useMocks) return createMockSettlementFinder();
+  return createOverpassFinder({
+    baseUrl: config.overpassUrl,
+    userAgent: config.userAgent,
+    throttle: sharedThrottle("overpass"),
+    cache: sharedCache("overpass", 24 * HOUR, 200),
   });
 }
 

@@ -24,3 +24,30 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Map pins (Leaflet divIcons). Also reused for the legend on /results. */
+.midway-pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.35);
+  border: 2px solid #fff;
+}
+.midway-pin-member {
+  background: #2563eb;
+  font-size: 12px;
+}
+.midway-pin-candidate {
+  background: #ea580c;
+  font-size: 14px;
+  border-radius: 6px;
+}
+.midway-pin.legend {
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+}

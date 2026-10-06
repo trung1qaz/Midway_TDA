@@ -140,3 +140,12 @@ describe("mock parser output", () => {
     expect(members[2].availability.windows[0].date).toBe("2026-10-10");
   });
 });
+
+describe("isTransientGeminiError", () => {
+  it("retries on 503/429 capacity errors only", async () => {
+    const { isTransientGeminiError } = await import("@/lib/parser/gemini");
+    expect(isTransientGeminiError(new Error('{"error":{"code":503,"message":"high demand","status":"UNAVAILABLE"}}'))).toBe(true);
+    expect(isTransientGeminiError(new Error('{"error":{"code":429,"status":"RESOURCE_EXHAUSTED"}}'))).toBe(true);
+    expect(isTransientGeminiError(new Error('{"error":{"code":400,"message":"API key not valid"}}'))).toBe(false);
+  });
+});
